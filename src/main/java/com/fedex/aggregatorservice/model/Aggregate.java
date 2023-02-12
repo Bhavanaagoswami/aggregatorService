@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Getter
@@ -16,13 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Aggregate {
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    HashMap<String, List<Object>> shipments;
+    Map<String, List<Object>> shipments;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    HashMap<String, List<Object>> track;
+    Map<String, List<Object>> track;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    HashMap<String, List<Object>> pricing;
+    Map<String, List<Object>> pricing;
 }
 
