@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 @Service
 @Slf4j
 public class ShipmentService {
@@ -46,23 +44,25 @@ public class ShipmentService {
         } catch (IOException | InterruptedException e) {
             log.error("Time out error !!!");
         }
-        log.info("status of shipment service " + response.statusCode());
-
+        if (Objects.isNull(response)) {
+            return CompletableFuture.completedFuture("");
+        }
         return CompletableFuture.completedFuture(response.body());
     }
 
 
-    public void shipmentDetailsForOrders(List<Long> shipmentsOrderNumbers, Map<String, List<Object>> shipmentMap) {
+    public void shipmentDetailsForOrders(List<Long> shipmentsOrderNumbers, Map<String, List<String>> shipmentMap) {
         shipmentsOrderNumbers.forEach(order -> {
             String shipmentResponse = null;
             try {
-                shipmentResponse = callExternalShipmentService(order).get();
-            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                shipmentResponse = callExternalShipmentService(order).getNow(null);
+                if (Objects.nonNull(shipmentResponse) && !shipmentResponse.isEmpty()
+                        && !shipmentResponse.equalsIgnoreCase("{message:service unavailable}")) {
+                    shipmentResponse = shipmentResponse.replaceAll("\"", "");
+                    shipmentMap.put(String.valueOf(order), Arrays.asList(shipmentResponse.split("/,/")));
+                }
+            } catch (JsonProcessingException e) {
                 log.error("shipment service for order number {} is failing for {}", order, e.getMessage());
-            }
-            if (Objects.nonNull(shipmentResponse)) {
-                shipmentResponse = shipmentResponse.replaceAll("\"", "");
-                shipmentMap.put(String.valueOf(order), Arrays.asList(shipmentResponse.split("/,/")));
             }
         });
     }

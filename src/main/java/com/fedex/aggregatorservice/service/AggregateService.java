@@ -1,21 +1,10 @@
 package com.fedex.aggregatorservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fedex.aggregatorservice.model.Aggregate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -36,18 +25,18 @@ public class AggregateService {
     public Aggregate getAllApiAggregateDetails(List<Long> shipmentsOrderNumbers, List<Long> trackOrderNumbers, List<String> priceCountryCodes) {
 
         Aggregate aggregate = new Aggregate();
-        HashMap<String, List<Object>> shipmentMap = new HashMap<>();
-        HashMap<String, List<Object>> trackStatusMap = new HashMap<>();
-        HashMap<String, List<Object>> pricingMap = new HashMap<>();
+        Map<String, List<String>> shipmentMap = new HashMap<>();
+        Map<String, List<String>> trackStatusMap = new HashMap<>();
+        Map<String, Double> pricingMap = new HashMap<>();
 
-        if(Objects.nonNull(shipmentsOrderNumbers)) {
+        if (Objects.nonNull(shipmentsOrderNumbers)) {
             shipmentService.shipmentDetailsForOrders(shipmentsOrderNumbers, shipmentMap);
         }
-        if(Objects.nonNull(trackOrderNumbers)) {
+        if (Objects.nonNull(trackOrderNumbers)) {
             trackService.trackDetails(trackOrderNumbers, trackStatusMap);
         }
 
-        if(Objects.nonNull(priceCountryCodes)) {
+        if (Objects.nonNull(priceCountryCodes)) {
             pricingService.getPricingDetailsForCountryCode(priceCountryCodes, pricingMap);
         }
         aggregate.setShipments(shipmentMap);

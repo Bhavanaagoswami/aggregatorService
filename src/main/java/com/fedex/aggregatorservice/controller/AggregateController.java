@@ -20,7 +20,7 @@ public class AggregateController {
         this.aggregateService = aggregateService;
     }
 
-    @GetMapping(value = "/aggregation",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/aggregation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Aggregate> getAggregateDetails(@RequestParam(required = false) List<Long> shipmentsOrderNumbers,
                                                          @RequestParam(required = false) List<Long> trackOrderNumbers,
                                                          @RequestParam(required = false) List<String> pricingCountryCodes) {

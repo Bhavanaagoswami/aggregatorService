@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ConfigurationProperties(prefix="external.service")
+@ConfigurationProperties(prefix = "external.service")
 @Getter
 @Setter
 @NoArgsConstructor
 @PropertySource(
-        value= {"classpath:application.properties"}
+        value = {"classpath:application.properties"}
 )
 public class ServiceConfiguration {
  private String baseUrl;

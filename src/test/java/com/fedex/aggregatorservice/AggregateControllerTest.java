@@ -10,10 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -36,22 +33,22 @@ public class AggregateControllerTest {
     }
 
     @Test
-    public void getAllApiResponse() throws Throwable {
+    public void getAggregateResponse() throws Throwable {
         //GIVEN
         List<Long> orderNumber = List.of(111111111L);
         List<String> pricing = List.of("UK", "IN", "FR");
-        List<Object> shipmentServiceResponse = Arrays.asList("BOX", "ENVELOPE");
-        List<Object> priceServiceResponse = Arrays.asList("DELIVERING");
+        List<String> shipmentServiceResponse = Arrays.asList("BOX", "ENVELOPE");
+        Double priceServiceResponse = 14.656565646;
 
         //Expected Response Object
         Aggregate aggregate = new Aggregate();
-        Map<String, List<Object>> map = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
         map.put(orderNumber.get(0).toString(), shipmentServiceResponse);
         aggregate.setShipments(map);
 
-        map = new HashMap<>();
-        map.put(orderNumber.get(0).toString(), priceServiceResponse);
-        aggregate.setPricing(map);
+        Map<String, Double> pricingMap = new HashMap<>();
+        pricingMap.put(pricing.get(0).toString(), priceServiceResponse);
+        aggregate.setPricing(pricingMap);
 
         //WHEN
         when(this.aggregateService.getAllApiAggregateDetails(orderNumber, null, pricing))
@@ -70,10 +67,12 @@ public class AggregateControllerTest {
     public void getAllApiResponseForAllNullPara() throws Throwable {
         //GIVEN
         Aggregate aggregate = new Aggregate();
-        Map<String, List<Object>> map = new HashMap<>();
-        aggregate.setShipments(map);
-        aggregate.setPricing(map);
-        aggregate.setPricing(map);
+        Map<String, List<String>> shipmentMap = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
+        Map<String, Double> pricingMap = new HashMap<>();
+        aggregate.setShipments(shipmentMap);
+        aggregate.setTrack(map);
+        aggregate.setPricing(pricingMap);
 
         //WHEN
         when(this.aggregateService.getAllApiAggregateDetails(null, null, null))

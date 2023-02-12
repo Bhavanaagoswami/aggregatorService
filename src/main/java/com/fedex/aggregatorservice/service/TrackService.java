@@ -12,9 +12,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,24 +46,23 @@ public class TrackService {
             log.error("Time out error !!!");
         }
         if(Objects.isNull(response)) {
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture("");
         }
-        log.debug("status of tracking service " + response.statusCode());
-
         return CompletableFuture.completedFuture(response.body());
     }
 
-    public void trackDetails(List<Long> trackOrderNumbers, Map<String, List<Object>> trackStatusMap) {
+    public void trackDetails(List<Long> trackOrderNumbers, Map<String, List<String>> trackStatusMap) {
         trackOrderNumbers.forEach(order -> {
             String trackResponse = null;
             try {
-                trackResponse = getTrackStatusDetails(order).get();
-            } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+                trackResponse = getTrackStatusDetails(order).getNow(null);
+            } catch (JsonProcessingException e) {
                 log.error("track service for order number {} is failing for {}",order,e.getMessage());
             }
-            if (Objects.nonNull(trackResponse)) {
+            if (Objects.nonNull(trackResponse) && !trackResponse.isEmpty() && !trackResponse.equalsIgnoreCase("{message:service unavailable}")) {
                 trackResponse = trackResponse.replaceAll("\"", "");
-                trackStatusMap.put(String.valueOf(order), Arrays.asList(trackResponse.split("/,/")));
+                List<String> trackResponseList = Arrays.stream(trackResponse.split("/,/")).collect(Collectors.toList());
+                trackStatusMap.put(String.valueOf(order), trackResponseList);
             }
         });
     }

@@ -10,7 +10,7 @@ Aggregator Service has only one rest endpoints for aggregate model.
 # Tech Stack
 
 Made assumptions in the implementation explicit,
-* As per requirement,getApi takes 3 parameters but all are set required= false.
+* As per requirement,getApi takes 3 parameters but all are set required=false.
 * All the order number taken as Long number and countryCode taken as String.
 * Creates a aggregate model for response. 
 * All external APIs are called asynchronously with timeout of 5 second.
@@ -28,13 +28,15 @@ choices of tech stack are good but need to be communicated.
   to be executed in build processes)
 * Added docker file to run the latest image of aggregator service.
 ## Requirements:
-* Maven 3.8.5
+* Maven 3.8.6
 * Java/JDK 18
 
 ## Build & Run
 To build this application we can easily call Maven to help us with the below command: ```mvn
 clean install
 ``` To run the application we can use the below command: ``` mvn sprint-boot :run ```
+we can also call docker run for generated image.
+
 ``` This process will perform the below activities sequence:
   * 1 - compilation check in java;
   * 2 - tests;
@@ -43,7 +45,7 @@ Get Aggregate Service provide aggregate of 3 services. Each service return some 
 countryCode. A map collection element has been used to store each key and value combination return by given external services.
 A collection of these maps are stored in Aggreate Object.That is retrun as  API response.
 All the external API has been called asynchronously and Future response has been collected .
-All th external API has timeout of 5 second else We ignore that element from the given set of input list.  
+All th external API has timeout of 5 second else ignore that element from the given set of input list.  
 ```
 ####GET
 ```
